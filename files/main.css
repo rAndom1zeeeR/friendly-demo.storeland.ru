@@ -1019,7 +1019,7 @@ input.square:hover:after, input.square:checked:after, .CompareCheckbox:hover:aft
 .cartFoot .coupons .input-box input {background-color: transparent;border: 2px solid #6c4e31;}
 /** Купоны **/
 .coupon__order {position: relative;max-width: 350px;}
-.coupon__button {position: absolute;right: 10px;line-height: 40px;padding-left: 0.75rem;border-left: 1px solid #dee3ee;}
+.coupon__button {position: absolute;top: 0;right: 10px;line-height: 40px;padding-left: 0.75rem;border-left: 1px solid #dee3ee;}
 .coupon__button:hover {color: #ff8c00;}
 .coupon__button i {vertical-align: middle;}
 .coupon__reset {display: none;position: absolute;top: 8px;right: 50px;line-height: 1;cursor: pointer;}

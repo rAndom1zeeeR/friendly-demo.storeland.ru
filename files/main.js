@@ -1486,12 +1486,13 @@ function OrderScripts() {
       $(this).parent().removeClass('active');
     }
   });
-  
-  // Отображение вариантов оплаты
-  var ID = $('input[name="form[delivery][id]"]:checked').val();
-  $('.order__payment').hide();
-  $('.order__payment[rel="' + ID + '"]').show();
-  $('.order__payment[rel="' + ID + '"]').find('input:first').click();
+  $(document).ready(function() {
+    // Отображение вариантов оплаты
+    var ID = $('input[name="form[delivery][id]"]:checked').val();
+    $('.order__payment').hide();
+    $('.order__payment[rel="' + ID + '"]').show();
+    $('.delivery__option[rel="' + ID + '"]').find('input').click();
+  });
   // Действия при выборе варианта доставки на этапе оформления заказа
   $('.delivery__radio').click(function(d){
     // Отображение вариантов оплаты при выборе доставки
@@ -1830,7 +1831,7 @@ function quantity() {
     return false;
   });
   // Если вводят 0 то заменяем на 1
-  $('.qty .quantity').off('change').change(function(){
+  $('.qty .quantity, .cartqty').change(function(){
     if($(this).val() < 1){
       $(this).val(1);
     }
@@ -1859,6 +1860,7 @@ function ajaxnewqty(){
           item = $('.cart__item[data-id="' + id + '"]');
           item.find('.ajaxtotal').html($(d).find('.cart__item[data-id="' + id + '"] .ajaxtotal').html());
           $('.TotalSum').html($(d).find('.TotalSum').html());
+          $('.formfastbuttons .cartSumTotal').html($(d).find('.TotalSum .cartSumTotal').html());
           $('.discounttr').each(function(){
             $(this).remove();
           });
@@ -2269,9 +2271,10 @@ function removeFromCartAll(e){
 function ajaxdelete(s){
   var yep = confirm('Вы точно хотите удалить товар из корзины?');
   if(yep == true){
-    var closeimg = s;
-    s.closest('tr').fadeOut();
-    url = closeimg.data('href');
+    s.closest('.cart__item').fadeOut();
+    url = s.data('href');
+    console.log(s)
+    console.log(url)
     $.ajax({
       url:url,
       cache:false,
