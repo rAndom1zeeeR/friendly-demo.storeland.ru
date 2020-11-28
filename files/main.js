@@ -271,7 +271,7 @@ $(function() {
             data.category[с].image_icon = data.category[с].image_icon;
           }
           // Отображаем результат поиска
-          $("#search__result .result__category").prepend('<div class="result__item" data-id="'+ data.category[с].goods_cat_id +'"><a href="'+ data.category[с].url +'"><div class="result__image"><img src="'+ data.category[с].image_icon +'" class="goods-image-icon" /></div><div class="result__name"><span>'+ data.category[с].goods_cat_name +'</span></div></a></div>');
+          $("#search__result .result__category").append('<div class="result__item" data-id="'+ data.category[с].goods_cat_id +'"><a href="'+ data.category[с].url +'"><div class="result__image"><img src="'+ data.category[с].image_icon +'" class="goods-image-icon" /></div><div class="result__name"><span>'+ data.category[с].goods_cat_name +'</span></div></a></div>');
         }
       }else{
         $(".result__category .result__item").remove();
@@ -290,7 +290,7 @@ $(function() {
           }
           // Отображаем результат поиска
           if(i <= 4 ){
-            $("#search__result .result__goods").prepend('<div class="result__item" data-id="'+ data.goods[i].goods_id +'"><a href="'+ data.goods[i].url +'"><div class="result__image"><img src="'+ data.goods[i].image_icon +'" class="goods-image-icon" /></div><div class="result__name"><span>'+ data.goods[i].goods_name +'</span></div></a></div>');
+            $("#search__result .result__goods").append('<div class="result__item" data-id="'+ data.goods[i].goods_id +'"><a href="'+ data.goods[i].url +'"><div class="result__image"><img src="'+ data.goods[i].image_icon +'" class="goods-image-icon" /></div><div class="result__name"><span>'+ data.goods[i].goods_name +'</span></div></a></div>');
           }
           // Если последняя итерация цикла вставим кнопку "показать все"
           if(i > 4){
@@ -1887,14 +1887,14 @@ function ajaxnewqty(){
 
 // Отправка купона при оформлении заказа
 function coupons() {
-  var submitBtn = $('.coupon__button');
-  var cuponInput = $('#coupon__code');
-  var resetBtn = $('.coupon__reset');
+  let submitBtn = $('.coupon__button');
+  let cuponInput = $('#coupon__code');
+  let resetBtn = $('.coupon__reset');
   submitBtn.click(function(){
-    var url = '/order/stage/confirm';
-    var val = cuponInput.val();
+    let url = '/order/stage/confirm';
+    let val = cuponInput.val();
     // Получаем данные формы, которые будем отправлять на сервер
-    var formData = $('#myform').serializeArray();
+    let formData = $('#myform').serializeArray();
     formData.push({name: 'ajax_q', value: 1});
     formData.push({name: 'only_body', value: 1});
     formData.push({name: 'form[coupon_code]', value: val});
@@ -1904,26 +1904,21 @@ function coupons() {
       url: url,
       data: formData,
       success: function(data) {
-        var discountBlock = $(data).closest('#myform').find('.discount');
-        var discountName = discountBlock.find('.name').text();
-        var discountPercent = discountBlock.find('.percent').text();
-        var totalBlock = $(data).closest('#myform').find('.total');
+        let discountBlock = $(data).closest('#myform').find('.discount');
+        let discountName = discountBlock.find('.name').text();
+        let discountPercent = discountBlock.find('.percent').text();
+        let totalBlock = $(data).closest('#myform').find('.total');
         // Записываем название и размер скидки по купону
         $('.total__coupons .total__label').html(discountName);
         $('.total__coupons .cartSumCoupons').html(discountPercent);
         $('.total__discount').hide();
         $('.total__coupons').show();
         // Получаем новую итоговую стоимость заказа
-        var totalSum = totalBlock.find('.total-sum').data('total-sum');
-        var deliveryPrice = parseInt($('.cartSumDelivery:eq(0) .num').text());
-        var newTotalSum = parseInt(totalSum) + parseInt(deliveryPrice);
-        var cartSum = $('.cartSumTotal').data('value');
-        // Обновляем значение итоговой стоимости
-        $('.formfastbuttons .cartSumTotal .num').text(newTotalSum);
-        $('.formfastbuttons .cartSumTotal').attr('data-value', newTotalSum);
-        $('.cartSumCoupons').attr('data-value', newTotalSum);
-        $('.cartSumTotalHide').attr('data-value', totalSum);
-        $('.cartSumTotalHide .num').text(totalSum);
+        let totalSum = totalBlock.find('.total-sum').data('total-sum');
+        let deliveryPrice = parseInt($('.cartSumDelivery:eq(0) .num').text());
+        let newTotalSum = totalSum + deliveryPrice;
+        let cartSum = $('.cartSumTotal').data('value');
+        console.log(newTotalSum + ' >= ' + cartSum)
         if (newTotalSum >= cartSum) {
           cuponInput.parent().addClass('error');
           cuponInput.parent().removeClass('active');
@@ -1936,6 +1931,12 @@ function coupons() {
           cuponInput.parent().addClass('active');
           submitBtn.html('<i class="material-icons">done</i>');
           $('.total__coupons').show();
+          // Обновляем значение итоговой стоимости
+          $('.formfastbuttons .cartSumTotal .num').text(newTotalSum);
+          $('.formfastbuttons .cartSumTotal').attr('data-value', newTotalSum);
+          $('.cartSumCoupons').attr('data-value', newTotalSum);
+          $('.cartSumTotalHide').attr('data-value', totalSum);
+          $('.cartSumTotalHide .num').text(totalSum);
         }
       },
       error: function(data){
@@ -1950,6 +1951,12 @@ function coupons() {
     setTimeout(function(){
       $('.total__coupons').hide();
       $('.total__discount').show();
+      let cartSum = $('.cartSum').data('value');
+      $('.formfastbuttons .cartSumTotal .num').text(cartSum);
+      $('.formfastbuttons .cartSumTotal').attr('data-value', cartSum);
+      $('.cartSumCoupons').attr('data-value', cartSum);
+      $('.cartSumTotalHide').attr('data-value', cartSum);
+      $('.cartSumTotalHide .num').text(cartSum);
       cuponInput.parent().removeClass('error');
       cuponInput.val("").attr("placeholder", "Введите купон");
       submitBtn.html('<i class="material-icons">send</i>');
